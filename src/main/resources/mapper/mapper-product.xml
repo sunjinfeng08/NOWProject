@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dat.now.dao.ProductDao" >
+    
+    <select id="pageQueryData" resultType="com.dat.now.bean.Product">
+        select
+            *
+        from product  
+        <where>
+            <if test="queryText != null">
+            and subcode01 like concat('%', #{queryText}, '%')
+            </if>
+        </where>  
+        order by productid desc   
+        limit #{start}, #{size}
+    </select>
+    <!-- 查询所有记录个数 -->
+     <select id="pageQueryCount" resultType="int">
+        select
+            count(*)
+        from product
+       <where>
+            <if test="queryText != null">
+            and subcode01 like concat('%', #{queryText}, '%')
+            </if>
+        </where>
+    </select>
+     <!--更新表数据  -->
+     <update id="updateProduct">
+        update product 
+        set longdescription = #{longdescription},
+         shortdescription = #{shortdescription},
+         searchdescription = #{searchdescription}
+        where productid = #{productid}
+    </update>
+    
+     <!-- 单个删除产品 -->
+     <delete id="deleteProductById">
+        delete from product where productid = #{productid}
+    </delete>
+    <!-- 批量删除操作 -->
+    <delete id="deleteProducts">
+        delete from product where productid in 
+        <foreach collection="productids" item="productid" open="(" close=")" separator=",">
+        #{productid}
+        </foreach>
+    </delete>
+    
+     <!-- 新增表数据 -->
+    <insert id="insertProduct">
+        insert into product (
+        companycode, itemtypecode, subcode01,  subcode02,  subcode03,  subcode04,
+         subcode05,subcode06,longdescription,shortdescription,searchdescription
+        ) values (
+        #{companycode},  #{itemtypecode}, #{subcode01}, #{subcode02}, #{subcode03},
+         #{subcode04},#{subcode05},#{subcode06},  #{longdescription},  #{shortdescription},  #{searchdescription} 
+        )       
+    </insert>
+</mapper>

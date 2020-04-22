@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dat.now.dao.UserDao" >
+    
+    <select id="pageQueryData" resultType="com.dat.now.bean.User">
+        select
+            *
+        from user  
+        <where>
+            <!-- <if test="queryText != null">
+            and id like concat('%', #{queryText}, '%')
+            </if> -->
+            <if test="useridfilter != null">
+             and id like concat('%', #{useridfilter}, '%')
+            </if>
+            <if test="usernamefilter != null">
+             and name like concat('%', #{usernamefilter}, '%')
+            </if>
+            <if test="useremailfilter != null">
+             and email like concat('%', #{useremailfilter}, '%')
+            </if>
+        </where>  
+        order by id1 desc   
+        limit #{start}, #{size}
+    </select>
+    <!-- 查询所有记录个数 -->
+     <select id="pageQueryCount" resultType="int">
+        select
+            count(*)
+        from user
+       <where>
+            <if test="queryText != null">
+            and id like concat('%', #{queryText}, '%')
+            </if>
+        </where>
+    </select>
+    <!-- 新增表数据 -->
+    <insert id="insertUser">
+        insert into user (
+            id, name, userpw, email, createtime
+        ) values (
+            #{id}, #{name}, #{userpw}, #{email}, #{createtime}
+        )       
+    </insert>
+     <!--更新表数据  -->
+     <update id="updateUser">
+        update user 
+        set id = #{id}, name = #{name}, email = #{email}
+        where id1 = #{id1}
+    </update>
+    <!-- 删除表数据 -->
+     <delete id="deleteUserById">
+        delete from user where id1 = #{id}
+    </delete>
+    <!-- 批量删除操作 -->
+    <delete id="deleteUsers">
+        delete from user where id1 in 
+        <foreach collection="userids" item="userid" open="(" close=")" separator=",">
+        #{userid}
+        </foreach>
+    </delete>
+</mapper>
